@@ -12,6 +12,7 @@ import document from './modules/document';
 import rules from './modules/rules';
 import intro from './modules/intro';
 import animateResult from './modules/svg/animate-result';
+import animateTrip from './modules/canvas/trip';
 
 // init modules
 mobileHeight();
@@ -26,6 +27,7 @@ document();
 rules();
 intro();
 animateResult();
+animateTrip();
 
 const fullPageScroll = new FullPageScroll();
 fullPageScroll.init();

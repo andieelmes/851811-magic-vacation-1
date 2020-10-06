@@ -54,6 +54,14 @@
   }
 }
 
+.result__canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
 .result__title {
   margin: 0 auto 2rem;
   color: $c-light;
