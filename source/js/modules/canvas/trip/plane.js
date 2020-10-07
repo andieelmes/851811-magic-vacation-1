@@ -155,6 +155,9 @@ export default class Plane {
     this.ctx.bezierCurveTo(topCurveControlPoint1.x, topCurveControlPoint1.y, topCurveControlPoint2.x, topCurveControlPoint2.y, curvesEndPoint.x, curvesEndPoint.y);
     // this.ctx.lineTo(curvesEndPoint.x, curvesEndPoint.y);
 
+    // this.ctx.moveTo(this.initialPlanePosition.left, this.initialPlanePosition.top);
+    this.ctx.arc(arcCenter.x, arcCenter.y, this.backgroundRadius, arcAngles.start, arcAngles.end);
+
     this.ctx.moveTo(this.initialPlanePosition.left, this.initialPlanePosition.top + this.background.size);
     this.ctx.bezierCurveTo(bottomCurveControlPoint1.x, bottomCurveControlPoint1.y, bottomCurveControlPoint2.x, bottomCurveControlPoint2.y, curvesEndPoint.x, curvesEndPoint.y);
     // this.ctx.lineTo(curvesEndPoint.x, curvesEndPoint.y);
@@ -162,9 +165,6 @@ export default class Plane {
     // this.ctx.moveTo(this.initialPlanePosition.left, this.initialPlanePosition.top + this.background.size);
     // this.ctx.lineTo(this.initialPlanePosition.left, this.initialPlanePosition.top);
     // this.ctx.closePath();
-
-    this.ctx.moveTo(this.initialPlanePosition.left, this.initialPlanePosition.top);
-    this.ctx.arc(arcCenter.x, arcCenter.y, this.backgroundRadius, arcAngles.start, arcAngles.end);
 
     // this.ctx.fillStyle = this.background.color;
     // this.ctx.strokeStyle = this.background.color;
