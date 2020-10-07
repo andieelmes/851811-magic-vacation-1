@@ -59,11 +59,22 @@ export default class Plane {
 
     this.staticTree = {
       left: this.initialPlanePosition.left + 150,
-      top: this.initialPlanePosition.top + 120,
-      height: 100,
+      top: this.initialPlanePosition.top + 140,
+      height: 80,
+      width: 40,
+      color: '#60448C',
+    }
+
+    this.growingTree = {
+      left: this.staticTree.left - this.staticTree.width,
+      top: this.initialPlanePosition.top + 80,
+      height: 140,
       width: 50,
       color: '#60448C',
     }
+
+    this.growingTreeInitialOffset = 200;
+    this.growingTreeFinalOffset = 0;
 
     this.draw = this.draw.bind(this);
   }
@@ -106,11 +117,18 @@ export default class Plane {
     }
   }
 
+  growingTreePositionTick(from, to) {
+    return (progress) => {
+      this.growingTree.offset = tick(from, to, progress);
+    };
+  }
+
   animate() {
     animateProgress(this.opacityAnimationTick(0, 1), this.duration);
     animateProgress(this.planePositionAnimationTick(this.initialPlanePosition, this.finalPlanePosition), this.duration);
     animateProgress(this.planeRotateAnimationTick(this.initialPlanePosition.angle, this.finalPlanePosition.angle), this.duration);
-    animateProgress(this.backgroundAnimationTick(this.initialBackground.size, this.finalBackground.size), this.duration)
+    animateProgress(this.backgroundAnimationTick(this.initialBackground.size, this.finalBackground.size), this.duration);
+    animateProgress(this.growingTreePositionTick(this.growingTreeInitialOffset, this.growingTreeFinalOffset), this.duration)
   };
 
   drawPlane() {
@@ -162,7 +180,6 @@ export default class Plane {
     this.ctx.bezierCurveTo(bottomCurveControlPoint1.x, bottomCurveControlPoint1.y, bottomCurveControlPoint2.x, bottomCurveControlPoint2.y, curvesEndPoint.x, curvesEndPoint.y);
 
     this.ctx.fillStyle = this.background.color;
-    this.ctx.globalAlpha = this.opacity;
     this.ctx.clip('evenodd');
     this.ctx.fill();
     this.ctx.restore();
@@ -182,8 +199,26 @@ export default class Plane {
     this.ctx.restore();
   }
 
+  drawGrowingTree() {
+    this.ctx.save();
+
+    const offsetTop = this.growingTree.offset + this.growingTree.top;
+
+    this.ctx.beginPath();
+    this.ctx.moveTo(this.growingTree.left, offsetTop);
+    this.ctx.lineTo(this.growingTree.left + this.growingTree.width / 2, offsetTop + this.growingTree.height);
+    this.ctx.lineTo(this.growingTree.left - this.growingTree.width / 2, offsetTop + this.growingTree.height);
+
+    this.ctx.fillStyle = this.growingTree.color;
+    this.ctx.globalAlpha = Math.pow(this.opacity, 3);
+    this.ctx.fill();
+
+    this.ctx.restore();
+  }
+
   drawTrees() {
     this.drawStaticTree();
+    this.drawGrowingTree();
   };
 
   draw() {
