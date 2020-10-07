@@ -87,10 +87,6 @@ export default class Plane {
 
   planeRotateAnimationTick(from, to) {
     return (progress) => {
-      // const currentPlaneTopDelta = this.planePosition.top - this.initialPlanePosition.top;
-      // const isPlaneGoingDown = currentPlaneTopDelta > this.previousPlanePositionDelta;
-      // const isPlaneCloseToBottom = currentPlaneTopDelta - this.planePositionAmplitude > -10;
-      // this.previousPlanePositionDelta = currentPlaneTopDelta;
       this.planePosition.angle = tick(from, to, Math.pow(progress, 2.5));
     };
   }
@@ -153,27 +149,15 @@ export default class Plane {
 
     this.ctx.arc(arcCenter.x, arcCenter.y, this.backgroundRadius, arcAngles.start, arcAngles.end);
 
-    // this.ctx.moveTo(this.initialPlanePosition.left, this.initialPlanePosition.top);
     this.ctx.bezierCurveTo(topCurveControlPoint1.x, topCurveControlPoint1.y, topCurveControlPoint2.x, topCurveControlPoint2.y, curvesEndPoint.x, curvesEndPoint.y);
-    // this.ctx.lineTo(curvesEndPoint.x, curvesEndPoint.y);
-
-    // this.ctx.moveTo(this.initialPlanePosition.left, this.initialPlanePosition.top);
 
     this.ctx.moveTo(this.initialPlanePosition.left, this.initialPlanePosition.top + this.background.size);
     this.ctx.bezierCurveTo(bottomCurveControlPoint1.x, bottomCurveControlPoint1.y, bottomCurveControlPoint2.x, bottomCurveControlPoint2.y, curvesEndPoint.x, curvesEndPoint.y);
-    // this.ctx.lineTo(curvesEndPoint.x, curvesEndPoint.y);
-
-    // this.ctx.moveTo(this.initialPlanePosition.left, this.initialPlanePosition.top + this.background.size);
-    // this.ctx.lineTo(this.initialPlanePosition.left, this.initialPlanePosition.top);
-    // this.ctx.closePath();
 
     this.ctx.fillStyle = this.background.color;
-    // this.ctx.strokeStyle = 'red';
     this.ctx.globalAlpha = this.opacity;
     this.ctx.clip('evenodd');
     this.ctx.fill();
-    // this.ctx.closePath();
-    // this.ctx.stroke();
     this.ctx.restore();
   };
 
