@@ -57,6 +57,14 @@ export default class Plane {
 
     this.arcAngles = { start: Math.PI / 2, end: Math.PI * 3 / 2};
 
+    this.staticTree = {
+      left: this.initialPlanePosition.left + 150,
+      top: this.initialPlanePosition.top + 120,
+      height: 100,
+      width: 50,
+      color: '#60448C',
+    }
+
     this.draw = this.draw.bind(this);
   }
 
@@ -160,11 +168,30 @@ export default class Plane {
     this.ctx.restore();
   };
 
+  drawStaticTree() {
+    this.ctx.save();
+
+    this.ctx.beginPath();
+    this.ctx.moveTo(this.staticTree.left, this.staticTree.top);
+    this.ctx.lineTo(this.staticTree.left + this.staticTree.width / 2, this.staticTree.top + this.staticTree.height);
+    this.ctx.lineTo(this.staticTree.left - this.staticTree.width / 2, this.staticTree.top + this.staticTree.height);
+
+    this.ctx.fillStyle = this.staticTree.color;
+    this.ctx.fill();
+
+    this.ctx.restore();
+  }
+
+  drawTrees() {
+    this.drawStaticTree();
+  };
+
   draw() {
     this.ctx.save();
     this.ctx.globalAlpha = this.opacity;
     this.drawPlane()
     this.drawBackground();
+    this.drawTrees();
     this.ctx.restore();
   }
 
