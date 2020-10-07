@@ -55,7 +55,7 @@ export default class Plane {
       size: 300,
     }
 
-    this.defaultArcAngles = { start: 0, end: 2 * Math.PI };
+    this.arcAngles = { start: Math.PI / 2, end: Math.PI * 3 / 2};
 
     this.draw = this.draw.bind(this);
   }
@@ -119,7 +119,6 @@ export default class Plane {
 
     this.backgroundRadius = this.background.size / 2
     const arcCenter = { x: this.initialPlanePosition.left, y: this.initialPlanePosition.top + this.backgroundRadius };
-    const arcAngles = { start: Math.PI / 2, end: Math.PI * 3 / 2};
     const curvesEndPoint = this.getPlaneTail();
 
     const planeProgress = (this.planePosition.left - this.initialPlanePosition.left) / (this.finalPlanePosition.left - this.initialPlanePosition.left);
@@ -147,7 +146,7 @@ export default class Plane {
 
     this.ctx.beginPath();
 
-    this.ctx.arc(arcCenter.x, arcCenter.y, this.backgroundRadius, arcAngles.start, arcAngles.end);
+    this.ctx.arc(arcCenter.x, arcCenter.y, this.backgroundRadius, this.arcAngles.start, this.arcAngles.end);
 
     this.ctx.bezierCurveTo(topCurveControlPoint1.x, topCurveControlPoint1.y, topCurveControlPoint2.x, topCurveControlPoint2.y, curvesEndPoint.x, curvesEndPoint.y);
 
