@@ -153,7 +153,7 @@ export default class Plane {
 
     this.ctx.arc(arcCenter.x, arcCenter.y, this.backgroundRadius, arcAngles.start, arcAngles.end);
 
-    this.ctx.moveTo(this.initialPlanePosition.left, this.initialPlanePosition.top);
+    // this.ctx.moveTo(this.initialPlanePosition.left, this.initialPlanePosition.top);
     this.ctx.bezierCurveTo(topCurveControlPoint1.x, topCurveControlPoint1.y, topCurveControlPoint2.x, topCurveControlPoint2.y, curvesEndPoint.x, curvesEndPoint.y);
     // this.ctx.lineTo(curvesEndPoint.x, curvesEndPoint.y);
 
@@ -167,13 +167,13 @@ export default class Plane {
     // this.ctx.lineTo(this.initialPlanePosition.left, this.initialPlanePosition.top);
     // this.ctx.closePath();
 
-    // this.ctx.fillStyle = this.background.color;
-    // this.ctx.strokeStyle = this.background.color;
+    this.ctx.fillStyle = this.background.color;
+    // this.ctx.strokeStyle = 'red';
     this.ctx.globalAlpha = this.opacity;
+    this.ctx.clip('evenodd');
+    this.ctx.fill();
     // this.ctx.closePath();
-    // this.ctx.clip();
-    this.ctx.stroke();
-    // this.ctx.fill();
+    // this.ctx.stroke();
     this.ctx.restore();
   };
 
