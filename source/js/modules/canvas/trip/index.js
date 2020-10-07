@@ -2,7 +2,7 @@
 import Plane from './plane';
 import Walrus from './walrus';
 import Snowflake from './snowflake';
-import { animateDuration } from '../common/helpers';
+import {animateDuration} from '../common/helpers';
 
 const ANIMATION_DURATION = 1500;
 const TOTAL_DURATION = 3000;
@@ -13,7 +13,7 @@ let animate = true;
 
 export const endAnimation = () => {
   animate = false;
-}
+};
 
 const drawDuration = async () => {
   const canvasElement = document.getElementById(CANVAS_DURATION_ID);
@@ -22,10 +22,10 @@ const drawDuration = async () => {
 
   const ctx = canvasElement.getContext(`2d`);
 
-  const plane = new Plane({ duration: ANIMATION_DURATION, ctx })
+  const plane = new Plane({duration: ANIMATION_DURATION, ctx});
   plane.prepareImage();
 
-  const walrus = new Walrus({ duration: ANIMATION_DURATION, ctx })
+  const walrus = new Walrus({duration: ANIMATION_DURATION, ctx});
   walrus.prepareImage();
 
   const render = () => {
@@ -60,7 +60,7 @@ const drawInfinite = async () => {
     },
     skew: [-0.3, 0.3],
     scale: [1, 1],
-  })
+  });
   snowflakeLeft.prepareImage();
 
   const snowflakeRight = new Snowflake({
@@ -72,7 +72,7 @@ const drawInfinite = async () => {
     },
     skew: [0.3, -0.3],
     scale: [-0.7, 0.7],
-  })
+  });
   snowflakeRight.prepareImage();
 
   const render = () => {
@@ -83,7 +83,9 @@ const drawInfinite = async () => {
 
     ctx.restore();
 
-    if (animate) requestAnimationFrame(render);
+    if (animate) {
+      requestAnimationFrame(render);
+    }
   };
 
   setTimeout(() => snowflakeLeft.animate(), ANIMATION_DURATION * 0.7);
@@ -95,4 +97,4 @@ const drawInfinite = async () => {
 export default async () => {
   drawDuration();
   drawInfinite();
-}
+};

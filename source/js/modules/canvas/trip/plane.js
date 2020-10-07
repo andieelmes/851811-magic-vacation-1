@@ -1,16 +1,12 @@
-import { property } from 'lodash';
 import {
-  animateEasing,
   animateProgress,
-  animateDuration,
   rotateCtx,
   rotateCoords,
   tick
 } from '../common/helpers';
-import { bounce, makeEaseOut } from '../common/time-functions';
 
 export default class Plane {
-  constructor({ duration, ctx }) {
+  constructor({duration, ctx}) {
     this.duration = duration;
     this.ctx = ctx;
 
@@ -18,11 +14,11 @@ export default class Plane {
       src: `img/result__images--trip/airplane.png`,
       width: 120,
       height: 120,
-    }
+    };
 
     this.initialPlanePosition = {
       top: window.innerHeight / 2 - this.plane.height / 2 - 50,
-      left: window.innerWidth  / 2 - this.plane.width / 2,
+      left: window.innerWidth / 2 - this.plane.width / 2,
       angle: 80,
     };
 
@@ -43,35 +39,35 @@ export default class Plane {
     this.initialBackground = {
       progress: 0,
       size: 0,
-    }
+    };
 
     this.background = {
       ...this.initialBackground,
-      color: '#ACC3FF',
-    }
+      color: `#ACC3FF`,
+    };
 
     this.finalBackground = {
       progress: 1,
       size: 300,
-    }
+    };
 
-    this.arcAngles = { start: Math.PI / 2, end: Math.PI * 3 / 2};
+    this.arcAngles = {start: Math.PI / 2, end: Math.PI * 3 / 2};
 
     this.staticTree = {
       left: this.initialPlanePosition.left + 150,
       top: this.initialPlanePosition.top + 140,
       height: 80,
       width: 40,
-      color: '#60448C',
-    }
+      color: `#60448C`,
+    };
 
     this.growingTree = {
       left: this.staticTree.left - this.staticTree.width,
       top: this.initialPlanePosition.top + 80,
       height: 140,
       width: 50,
-      color: '#60448C',
-    }
+      color: `#60448C`,
+    };
 
     this.growingTreeInitialOffset = 200;
     this.growingTreeFinalOffset = 0;
@@ -80,12 +76,12 @@ export default class Plane {
   }
 
   getPlaneCenter() {
-    return { x: this.planePosition.left + (this.plane.width / 2), y: this.planePosition.top + (this.plane.height / 2) }
-  };
+    return {x: this.planePosition.left + (this.plane.width / 2), y: this.planePosition.top + (this.plane.height / 2)};
+  }
 
   getPlaneTail() {
     const center = this.getPlaneCenter();
-    const zeroDegreeCoords = { x: this.planePosition.left + this.plane.width * 0.2, y: this.planePosition.top + this.plane.height * 0.8 };
+    const zeroDegreeCoords = {x: this.planePosition.left + this.plane.width * 0.2, y: this.planePosition.top + this.plane.height * 0.8};
 
     return rotateCoords(center.x, center.y, zeroDegreeCoords.x, zeroDegreeCoords.y, this.planePosition.angle);
   }
@@ -114,7 +110,7 @@ export default class Plane {
     return (progress) => {
       this.background.progress = progress;
       this.background.size = tick(from, to, progress);
-    }
+    };
   }
 
   growingTreePositionTick(from, to) {
@@ -128,23 +124,23 @@ export default class Plane {
     animateProgress(this.planePositionAnimationTick(this.initialPlanePosition, this.finalPlanePosition), this.duration);
     animateProgress(this.planeRotateAnimationTick(this.initialPlanePosition.angle, this.finalPlanePosition.angle), this.duration);
     animateProgress(this.backgroundAnimationTick(this.initialBackground.size, this.finalBackground.size), this.duration);
-    animateProgress(this.growingTreePositionTick(this.growingTreeInitialOffset, this.growingTreeFinalOffset), this.duration)
-  };
+    animateProgress(this.growingTreePositionTick(this.growingTreeInitialOffset, this.growingTreeFinalOffset), this.duration);
+  }
 
   drawPlane() {
     this.ctx.save();
-    const { x, y } = this.getPlaneCenter();
+    const {x, y} = this.getPlaneCenter();
     rotateCtx(this.ctx, this.planePosition.angle, x, y);
     this.ctx.translate(this.planePosition.left, this.planePosition.top);
     this.ctx.drawImage(this.plane.img, 0, 0, this.plane.width, this.plane.height);
     this.ctx.restore();
-  };
+  }
 
   drawBackground() {
     this.ctx.save();
 
-    this.backgroundRadius = this.background.size / 2
-    const arcCenter = { x: this.initialPlanePosition.left, y: this.initialPlanePosition.top + this.backgroundRadius };
+    this.backgroundRadius = this.background.size / 2;
+    const arcCenter = {x: this.initialPlanePosition.left, y: this.initialPlanePosition.top + this.backgroundRadius};
     const curvesEndPoint = this.getPlaneTail();
 
     const planeProgress = (this.planePosition.left - this.initialPlanePosition.left) / (this.finalPlanePosition.left - this.initialPlanePosition.left);
@@ -180,10 +176,10 @@ export default class Plane {
     this.ctx.bezierCurveTo(bottomCurveControlPoint1.x, bottomCurveControlPoint1.y, bottomCurveControlPoint2.x, bottomCurveControlPoint2.y, curvesEndPoint.x, curvesEndPoint.y);
 
     this.ctx.fillStyle = this.background.color;
-    this.ctx.clip('evenodd');
+    this.ctx.clip(`evenodd`);
     this.ctx.fill();
     this.ctx.restore();
-  };
+  }
 
   drawStaticTree() {
     this.ctx.save();
@@ -219,12 +215,12 @@ export default class Plane {
   drawTrees() {
     this.drawStaticTree();
     this.drawGrowingTree();
-  };
+  }
 
   draw() {
     this.ctx.save();
     this.ctx.globalAlpha = this.opacity;
-    this.drawPlane()
+    this.drawPlane();
     this.drawBackground();
     this.drawTrees();
     this.ctx.restore();

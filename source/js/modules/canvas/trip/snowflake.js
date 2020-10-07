@@ -1,9 +1,5 @@
 import {
-  animateEasing,
   animateProgress,
-  animateDuration,
-  animateRepeating,
-  runSerial,
   tick,
   skewCtx,
 } from '../common/helpers';
@@ -61,7 +57,7 @@ export default class Snowflake {
   animate() {
     animateProgress(this.opacityAnimationTick(0, 1), this.duration);
     this.positionAnimationRequest = requestAnimationFrame(this.animatePosition);
-  };
+  }
 
   animatePosition(currentTime) {
     if (!this.lastFrameUpdateTime) {
@@ -89,7 +85,7 @@ export default class Snowflake {
     this.ctx.globalAlpha = this.opacity;
     this.ctx.drawImage(this.snowflake.img, 0, 0, this.snowflake.width, this.snowflake.height);
     this.ctx.restore();
-  };
+  }
 
   prepareImage() {
     this.snowflake.img = new Image();
