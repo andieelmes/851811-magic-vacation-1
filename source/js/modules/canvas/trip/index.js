@@ -33,7 +33,7 @@ const drawDuration = async () => {
     ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
     plane.draw();
-    // walrus.draw();
+    walrus.draw();
 
     ctx.restore();
   };
