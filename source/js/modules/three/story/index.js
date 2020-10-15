@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import {animateProgress, tick} from '../../canvas/common/helpers';
 
 import getRawShaderMaterialAttrs from '../common/get-raw-shader-material-attrs';
 
@@ -7,15 +8,17 @@ export default class Intro {
     this.innerWidth = window.innerWidth;
     this.innerHeight = window.innerHeight;
 
+    this.canvasCenter = {x: this.innerWidth / 2, y: this.innerHeight / 2};
+
     this.canvasSelector = `screen__canvas--story`;
     this.textures = [
       {
-        src: `img/screen__textures/scene-1.png`,
-        options: {hueShift: 0.0},
+        src: `img/screen__textures/scene-2.png`,
+        options: {hueShift: -0.26, magnify: true},
       },
       {
-        src: `img/screen__textures/scene-2.png`,
-        options: {hueShift: -0.26},
+        src: `img/screen__textures/scene-1.png`,
+        options: {hueShift: 0.0},
       },
       {
         src: `img/screen__textures/scene-3.png`,
@@ -28,6 +31,18 @@ export default class Intro {
     ];
     this.textureRatio = 2048 / 1024;
     this.backgroundColor = 0x5f458c;
+
+    this.bubblesDuration = 3000;
+
+    this.bubbles = [
+      {
+        radius: 100.0,
+        initialPosition: [this.canvasCenter.x, this.innerHeight],
+        position: [this.canvasCenter.x, this.innerHeight],
+        finalPosition: [this.canvasCenter.x, 0],
+        positionAmplitude: 100,
+      },
+    ];
 
     this.animationRequest = null;
 
@@ -68,6 +83,9 @@ export default class Intro {
 
     loadManager.onLoad = () => {
       loadedTextures.forEach((loadedTexture, index) => {
+        const scaleX = this.innerHeight * this.textureRatio;
+        const scaleY = this.innerHeight;
+
         const rawShaderMaterialAttrs = getRawShaderMaterialAttrs({
           map: {
             value: loadedTexture.src,
@@ -75,13 +93,21 @@ export default class Intro {
           options: {
             value: loadedTexture.options,
           },
+          ...loadedTexture.options.magnify && {
+            magnification: {
+              value: {
+                bubbles: this.bubbles,
+                resolution: [scaleX * 1.5, scaleY],
+              }
+            }
+          }
         });
 
         const material = new THREE.RawShaderMaterial(rawShaderMaterialAttrs);
 
         const image = new THREE.Mesh(geometry, material);
-        image.scale.x = this.innerHeight * this.textureRatio;
-        image.scale.y = this.innerHeight;
+        image.scale.x = scaleX;
+        image.scale.y = scaleY;
         image.position.x = this.getScenePosition(index);
 
         this.scene.add(image);
@@ -89,6 +115,7 @@ export default class Intro {
     };
 
     this.animationRequest = requestAnimationFrame(this.render);
+    this.animate();
   }
 
   end() {
@@ -119,6 +146,18 @@ export default class Intro {
 
   getScenePosition(index) {
     return this.innerHeight * this.textureRatio * index;
+  }
+
+  bubblePositionAnimationTick(index, from, to) {
+    return (progress) => {
+      this.bubbles[index].position[1] = tick(from[1], to[1], progress);
+      const offset = this.bubbles[index].positionAmplitude * Math.sin(progress * Math.PI * 10);
+      this.bubbles[index].position[0] = offset + this.bubbles[index].initialPosition[0];
+    };
+  }
+
+  animate() {
+    this.bubbles.forEach((bubble, index) => animateProgress(this.bubblePositionAnimationTick(index, this.bubbles[index].initialPosition, this.bubbles[index].finalPosition), this.bubblesDuration));
   }
 
   render() {
