@@ -80,22 +80,21 @@ vec4 magnify1(sampler2D originalTexture, magnificationStruct magnification) {
           return mix(texture2D(originalTexture, gl_FragCoord.xy / resolution.xy), vec4(outlineColor, 1.0), alpha);
       }
   } else {
-    return texture2D(originalTexture, gl_FragCoord.xy / resolution.xy);
+    return texture2D(originalTexture, vUv);
   }
 }
 
 void main() {
-  vec4 texel = texture2D(map, vUv);
-  vec4 result = texel;
+  vec4 result = texture2D(map, vUv);
+
+  if (options.magnify) {
+    result = magnify1(map, magnification);
+  }
 
   if (options.hueShift != 0.0) {
     vec3 hueShifted = hueShift(result.rgb, options.hueShift);
 
     result = vec4(hueShifted.rgb, 1);
-  }
-
-  if (options.magnify) {
-    result = magnify1(map, magnification);
   }
 
   gl_FragColor = result;
