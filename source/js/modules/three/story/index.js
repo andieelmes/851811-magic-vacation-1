@@ -97,7 +97,7 @@ export default class Intro {
             magnification: {
               value: {
                 bubbles: this.bubbles,
-                rwesolution: [width * pixelRatio, width / this.textureRatio * pixelRatio],
+                resolution: [width * pixelRatio, width / this.textureRatio * pixelRatio],
               }
             }
           },
