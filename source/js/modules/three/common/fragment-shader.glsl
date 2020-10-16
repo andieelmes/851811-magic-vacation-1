@@ -33,6 +33,12 @@ float getOffset(vec2 point, vec2 circle) {
   return sqrt(pow(point.x - circle.x, 2.0) + pow(point.y - circle.y, 2.0));
 }
 
+bool isCurrentBubble(vec2 point, vec2 circle, float radius, float outlineThickness) {
+  float offset = getOffset(point, circle);
+  return offset < radius + outlineThickness;
+}
+
+
 bool isInsideTheCircle(vec2 point, vec2 circle, float radius) {
   float offset = getOffset(point, circle);
   return offset < radius;
@@ -49,16 +55,12 @@ vec4 blendOutline(vec4 texture, vec4 outline) {
 }
 
 vec4 magnify(sampler2D map, magnificationStruct magnification) {
-  vec2 resolution = magnification.resolution;
-
+  float h = 40.0;
   float outlineThickness = 3.0;
   vec4 outlineColor = vec4(1, 1, 1, 0.5);
 
+  vec2 resolution = magnification.resolution;
   bubbleStruct bubble = magnification.bubbles[0];
-
-  float hr;
-  float h = 40.0;
-
   vec2 point = gl_FragCoord.xy;
 
   for (int index = 0; index < 3; index++) {
@@ -66,22 +68,22 @@ vec4 magnify(sampler2D map, magnificationStruct magnification) {
 
     vec2 currentPosition = currentBubble.position;
     float currentRadius = currentBubble.radius;
-    hr = currentRadius * sqrt(1.0 - ((currentRadius - h) / currentRadius) * ((currentRadius - h) / currentRadius));
 
-    if (isInsideTheCircle(point, currentPosition, hr)) {
+    if (isCurrentBubble(point, currentPosition, currentRadius, outlineThickness)) {
       bubble = currentBubble;
     }
   }
 
   vec2 position = bubble.position;
-  float R = bubble.radius;
+  float radius = bubble.radius;
 
+  float hr = radius * sqrt(1.0 - ((radius - h) / radius) * ((radius - h) / radius));
   float offset = sqrt(pow(point.x - position.x, 2.0) + pow(point.y - position.y, 2.0));
 
   bool pointIsInside = isInsideTheCircle(point, position, hr);
   bool pointIsOutline = isOutlineOfTheCircle(point, position, hr, outlineThickness);
 
-  vec2 newPoint = pointIsInside ? (point - position) * (R - h) / sqrt(pow(R, 2.0) - pow(offset, 2.0)) + position : point;
+  vec2 newPoint = pointIsInside ? (point - position) * (radius - h) / sqrt(pow(radius, 2.0) - pow(offset, 2.0)) + position : point;
 
   vec2 oldResolution = point / vUv;
   vec2 newVUv = (newPoint) / resolution;
