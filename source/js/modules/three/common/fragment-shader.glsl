@@ -40,12 +40,13 @@ bool isInsideTheCircle(vec2 point, vec2 circle, float radius) {
 
 bool isOutlineOfTheCircle(vec2 point, vec2 circle, float radius, float outlineThickness) {
   float offset = getOffset(point, circle);
-  return floor(offset) == floor(radius + outlineThickness);
+  return floor(offset) >= floor(radius) && floor(offset) <= floor(radius + outlineThickness);
 }
 
 vec4 magnify(sampler2D map, magnificationStruct magnification) {
-  float outlineThickness = 4.0;
+  float outlineThickness = 2.0;
   vec3 outlineColor = vec3(255.0, 255.0, 255.0);
+  float AA_RANGE = 2.0;
 
   vec2 resolution = magnification.resolution;
 

@@ -171,7 +171,7 @@ export default class Intro {
       const pixelRatio = this.renderer.getPixelRatio();
 
       this.bubbles[index].position[1] = tick(from[1], to[1], progress) * pixelRatio;
-      const offset = this.bubbles[index].positionAmplitude * Math.sin(progress * Math.PI * 10);
+      const offset = this.bubbles[index].positionAmplitude * Math.pow(1 - progress, 0.5) * Math.sin(progress * Math.PI * 10);
       this.bubbles[index].position[0] = (offset + this.bubbles[index].initialPosition[0]) * pixelRatio;
     };
   }
