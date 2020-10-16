@@ -55,7 +55,6 @@ vec4 blendOutline(vec4 texture, vec4 outline) {
 }
 
 vec4 magnify(sampler2D map, magnificationStruct magnification) {
-  float h = 40.0;
   float outlineThickness = 3.0;
   vec4 outlineColor = vec4(1, 1, 1, 0.5);
 
@@ -76,6 +75,7 @@ vec4 magnify(sampler2D map, magnificationStruct magnification) {
 
   vec2 position = bubble.position;
   float radius = bubble.radius;
+  float h = bubble.radius / 2.0;
 
   float hr = radius * sqrt(1.0 - ((radius - h) / radius) * ((radius - h) / radius));
   float offset = sqrt(pow(point.x - position.x, 2.0) + pow(point.y - position.y, 2.0));

@@ -13,12 +13,12 @@ export default class Intro {
     this.canvasSelector = `screen__canvas--story`;
     this.textures = [
       {
-        src: `img/screen__textures/scene-2.png`,
-        options: {hueShift: -0.26, magnify: true},
-      },
-      {
         src: `img/screen__textures/scene-1.png`,
         options: {hueShift: 0.0},
+      },
+      {
+        src: `img/screen__textures/scene-2.png`,
+        options: {hueShift: -0.26, magnify: true},
       },
       {
         src: `img/screen__textures/scene-3.png`,
@@ -76,6 +76,26 @@ export default class Intro {
     this.updateScreenSize = this.updateScreenSize.bind(this);
   }
 
+  addBubbleUniform(index) {
+    const { width, height } = this.renderer.getSize();
+    const pixelRatio = this.renderer.getPixelRatio();
+
+    if (this.textures[index].options.magnify) {
+      this.animateBubbles();
+
+      return {
+        magnification: {
+          value: {
+            bubbles: this.bubbles,
+            resolution: [width * pixelRatio, width / this.textureRatio * pixelRatio],
+          }
+        },
+      };
+    }
+
+    return {};
+  }
+
   init() {
     window.addEventListener(`resize`, this.handleResize);
 
@@ -100,9 +120,6 @@ export default class Intro {
 
     loadManager.onLoad = () => {
       this.materials = loadedTextures.map((loadedTexture, index) => {
-        const { width, height } = this.renderer.getSize();
-        const pixelRatio = this.renderer.getPixelRatio();
-
         const rawShaderMaterialAttrs = getRawShaderMaterialAttrs({
           map: {
             value: loadedTexture.src,
@@ -110,14 +127,7 @@ export default class Intro {
           options: {
             value: loadedTexture.options,
           },
-          ...loadedTexture.options.magnify && {
-            magnification: {
-              value: {
-                bubbles: this.bubbles,
-                resolution: [width * pixelRatio, width / this.textureRatio * pixelRatio],
-              }
-            },
-          },
+          ...this.addBubbleUniform(index),
         });
 
         const material = new THREE.RawShaderMaterial(rawShaderMaterialAttrs);
@@ -136,7 +146,6 @@ export default class Intro {
     };
 
     this.animationRequest = requestAnimationFrame(this.render);
-    this.animate();
   }
 
   end() {
@@ -170,6 +179,9 @@ export default class Intro {
 
   changeScene(index) {
     this.camera.position.x = this.getScenePosition(index);
+
+    const currentMaterialUniforms = this.materials[index].uniforms;
+    this.materials[index].uniforms = {...currentMaterialUniforms, ...this.addBubbleUniform(index)};
   }
 
   getScenePosition(index) {
@@ -186,7 +198,7 @@ export default class Intro {
     };
   }
 
-  animate() {
+  animateBubbles() {
     this.bubbles.forEach((bubble, index) => {
       setTimeout(() => {
         animateProgress(this.bubblePositionAnimationTick(index, this.bubbles[index].initialPosition, this.bubbles[index].finalPosition), this.bubblesDuration)
