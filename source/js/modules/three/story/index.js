@@ -76,11 +76,18 @@ export default class Intro {
     this.updateScreenSize = this.updateScreenSize.bind(this);
   }
 
+  resetBubbles() {
+    this.bubbles.forEach((_, index) => {
+      this.bubbles[index].position = [...this.bubbles[index].initialPosition];
+    })
+  }
+
   addBubbleUniform(index) {
     const { width, height } = this.renderer.getSize();
     const pixelRatio = this.renderer.getPixelRatio();
 
     if (this.textures[index].options.magnify) {
+      this.resetBubbles();
       this.animateBubbles();
 
       return {
@@ -192,9 +199,11 @@ export default class Intro {
     return (progress) => {
       const pixelRatio = this.renderer.getPixelRatio();
 
-      this.bubbles[index].position[1] = tick(from[1], to[1], progress) * pixelRatio;
+      const y = tick(from[1], to[1], progress) * pixelRatio;
       const offset = this.bubbles[index].positionAmplitude * Math.pow(1 - progress, 0.5) * Math.sin(progress * Math.PI * 10);
-      this.bubbles[index].position[0] = (offset + this.bubbles[index].initialPosition[0]) * pixelRatio;
+      const x = (offset + this.bubbles[index].initialPosition[0]) * pixelRatio;
+
+      this.bubbles[index].position = [x, y];
     };
   }
 
