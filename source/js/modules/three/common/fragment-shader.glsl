@@ -41,11 +41,16 @@ bool isInsideTheCircle(vec2 point, vec2 circle, float radius) {
 bool isOutlineOfTheCircle(vec2 point, vec2 circle, float radius, float outlineThickness) {
   float offset = getOffset(point, circle);
   return floor(offset) >= floor(radius) && floor(offset) <= floor(radius + outlineThickness);
+  // return offset <= radius;
+}
+
+vec4 blendOutline(vec4 texture, vec4 outline) {
+  return vec4(mix(texture.rgb, outline.rgb, outline.a), texture.a);
 }
 
 vec4 magnify(sampler2D map, magnificationStruct magnification) {
-  float outlineThickness = 2.0;
-  vec3 outlineColor = vec3(255.0, 255.0, 255.0);
+  float outlineThickness = 3.0;
+  vec4 outlineColor = vec4(1, 1, 1, 0.5);
   float AA_RANGE = 2.0;
 
   vec2 resolution = magnification.resolution;
@@ -82,7 +87,7 @@ vec4 magnify(sampler2D map, magnificationStruct magnification) {
   vec2 newVUv = (newXy) / resolution;
 
   if (pointIsOutline) {
-    return mix(texture2D(map, newVUv), vec4(outlineColor, 1.0), 1.0);
+    return blendOutline(texture2D(map, newVUv), outlineColor);
   }
 
   return texture2D(map, newVUv);
