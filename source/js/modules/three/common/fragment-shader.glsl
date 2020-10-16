@@ -9,13 +9,13 @@ struct optionsStruct {
 
 uniform optionsStruct options;
 
-struct bubble {
+struct bubbleStruct {
   float radius;
   vec2 position;
 };
 
 struct magnificationStruct {
-  bubble bubbles[1];
+  bubbleStruct bubbles[2];
   vec2 resolution;
 };
 
@@ -29,19 +29,62 @@ vec3 hueShift(vec3 color, float hue) {
   return vec3(color * cosAngle + cross(k, color) * sin(hue) + k * dot(k, color) * (1.0 - cosAngle));
 }
 
-vec4 magnify(sampler2D map, magnificationStruct magnification) {
-  vec2 resolution = magnification.resolution;
-  vec2 position = magnification.bubbles[0].position;
+float getOffset(vec2 point, vec2 circle) {
+  return sqrt(pow(point.x - circle.x, 2.0) + pow(point.y - circle.y, 2.0));
+}
 
-  float R = magnification.bubbles[0].radius;
+bool isInsideTheCircle(vec2 point, vec2 circle, float radius) {
+  float offset = getOffset(point, circle);
+  return offset < radius;
+}
+
+bool isOutlineOfTheCircle(vec2 point, vec2 circle, float radius, float outlineThickness) {
+  float offset = getOffset(point, circle);
+  return round(offset) == round(radius + outlineThickness);
+}
+
+vec4 magnify(sampler2D map, magnificationStruct magnification) {
+  float outlineThickness = 4.0;
+  vec3 outlineColor = vec3(255.0, 255.0, 255.0);
+
+  vec2 resolution = magnification.resolution;
+
+  const int currentBubbleIndex = 0;
+
+  // for (int index = 0; index < magnification.bubbles.length(); index++) {
+  //   bubbleStruct currentBubble = magnification.bubbles[index];
+  //   vec2 currentPosition = currentBubble.position;
+  //   float R = bubble.radius;
+  //   vec2 offset = gl_FragCoord - currentPosition;
+
+  //   // if (gl_FragCoord.x > currentPosition.x && gl_FragCoord.y > currentPosition.y && gl_FragCoord.x + radius < )
+  // }
+
+  vec2 position = magnification.bubbles[currentBubbleIndex].position;
+
+  float R = magnification.bubbles[currentBubbleIndex].radius;
   float h = 40.0;
   float hr = R * sqrt(1.0 - ((R - h) / R) * ((R - h) / R));
 
-  vec2 xy = gl_FragCoord.xy - position;
-  float r = sqrt(xy.x * xy.x + xy.y * xy.y);
-  vec2 new_xy = r < hr ? xy * (R - h) / sqrt(R * R - r * r) : xy;
+  // for (int index = 0; i < magnification.bubbles.length; index++) {
+  // }
 
-  return texture2D(map, (new_xy + position) / resolution);
+  vec2 xy = gl_FragCoord.xy;
+  float offset = sqrt(pow(xy.x - position.x, 2.0) + pow(xy.y - position.y, 2.0));
+
+  bool pointIsInside = isInsideTheCircle(xy, position, hr);
+  bool pointIsOutline = isOutlineOfTheCircle(xy, position, hr, outlineThickness);
+
+  vec2 newXy = pointIsInside ? (xy - position) * (R - h) / sqrt(pow(R, 2.0) - pow(offset, 2.0)) + position : xy;
+
+  vec2 oldResolution = xy / vUv;
+  vec2 newVUv = (newXy) / resolution;
+
+  if (pointIsOutline) {
+    return mix(texture2D(map, newVUv), vec4(outlineColor, 1.0), 1.0);
+  }
+
+  return texture2D(map, newVUv);
 }
 
 vec4 magnify1(sampler2D originalTexture, magnificationStruct magnification) {
@@ -88,7 +131,7 @@ void main() {
   vec4 result = texture2D(map, vUv);
 
   if (options.magnify) {
-    result = magnify1(map, magnification);
+    result = magnify(map, magnification);
   }
 
   if (options.hueShift != 0.0) {

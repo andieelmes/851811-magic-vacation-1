@@ -13,12 +13,12 @@ export default class Intro {
     this.canvasSelector = `screen__canvas--story`;
     this.textures = [
       {
-        src: `img/screen__textures/scene-1.png`,
-        options: {hueShift: 0.0},
-      },
-      {
         src: `img/screen__textures/scene-2.png`,
         options: {hueShift: -0.26, magnify: true},
+      },
+      {
+        src: `img/screen__textures/scene-1.png`,
+        options: {hueShift: 0.0},
       },
       {
         src: `img/screen__textures/scene-3.png`,
@@ -32,7 +32,7 @@ export default class Intro {
     this.textureRatio = 2048 / 1024;
     this.backgroundColor = 0x5f458c;
 
-    this.bubblesDuration = 3000;
+    this.bubblesDuration = 5000;
 
     this.bubbles = [
       {
@@ -40,6 +40,13 @@ export default class Intro {
         initialPosition: [this.canvasCenter.x, -100],
         position: [this.canvasCenter.x, -100],
         finalPosition: [this.canvasCenter.x, this.innerHeight + 100],
+        positionAmplitude: 100,
+      },
+      {
+        radius: 80.0,
+        initialPosition: [this.canvasCenter.x - this.innerWidth / 3, -100],
+        position: [this.canvasCenter.x - this.innerWidth / 3, -100],
+        finalPosition: [this.canvasCenter.x - this.innerWidth / 3 , this.innerHeight + 100],
         positionAmplitude: 100,
       },
     ];
