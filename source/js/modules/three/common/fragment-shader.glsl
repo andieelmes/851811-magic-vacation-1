@@ -15,7 +15,7 @@ struct bubbleStruct {
 };
 
 struct magnificationStruct {
-  bubbleStruct bubbles[2];
+  bubbleStruct bubbles[3];
   vec2 resolution;
 };
 
@@ -49,33 +49,33 @@ vec4 blendOutline(vec4 texture, vec4 outline) {
 }
 
 vec4 magnify(sampler2D map, magnificationStruct magnification) {
-  float outlineThickness = 3.0;
-  vec4 outlineColor = vec4(1, 1, 1, 0.5);
-  float AA_RANGE = 2.0;
-
   vec2 resolution = magnification.resolution;
 
-  const int currentBubbleIndex = 0;
+  float outlineThickness = 3.0;
+  vec4 outlineColor = vec4(1, 1, 1, 0.5);
 
-  // for (int index = 0; index < magnification.bubbles.length(); index++) {
-  //   bubbleStruct currentBubble = magnification.bubbles[index];
-  //   vec2 currentPosition = currentBubble.position;
-  //   float R = bubble.radius;
-  //   vec2 offset = gl_FragCoord - currentPosition;
+  bubbleStruct bubble = magnification.bubbles[0];
 
-  //   // if (gl_FragCoord.x > currentPosition.x && gl_FragCoord.y > currentPosition.y && gl_FragCoord.x + radius < )
-  // }
-
-  vec2 position = magnification.bubbles[currentBubbleIndex].position;
-
-  float R = magnification.bubbles[currentBubbleIndex].radius;
+  float hr;
   float h = 40.0;
-  float hr = R * sqrt(1.0 - ((R - h) / R) * ((R - h) / R));
-
-  // for (int index = 0; i < magnification.bubbles.length; index++) {
-  // }
 
   vec2 point = gl_FragCoord.xy;
+
+  for (int index = 0; index < 3; index++) {
+    bubbleStruct currentBubble = magnification.bubbles[index];
+
+    vec2 currentPosition = currentBubble.position;
+    float currentRadius = currentBubble.radius;
+    hr = currentRadius * sqrt(1.0 - ((currentRadius - h) / currentRadius) * ((currentRadius - h) / currentRadius));
+
+    if (isInsideTheCircle(point, currentPosition, hr)) {
+      bubble = currentBubble;
+    }
+  }
+
+  vec2 position = bubble.position;
+  float R = bubble.radius;
+
   float offset = sqrt(pow(point.x - position.x, 2.0) + pow(point.y - position.y, 2.0));
 
   bool pointIsInside = isInsideTheCircle(point, position, hr);

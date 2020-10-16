@@ -41,6 +41,7 @@ export default class Intro {
         position: [this.canvasCenter.x, -100],
         finalPosition: [this.canvasCenter.x, this.innerHeight + 100],
         positionAmplitude: 100,
+        timeout: 0,
       },
       {
         radius: 80.0,
@@ -48,6 +49,15 @@ export default class Intro {
         position: [this.canvasCenter.x - this.innerWidth / 3, -100],
         finalPosition: [this.canvasCenter.x - this.innerWidth / 3 , this.innerHeight + 100],
         positionAmplitude: 100,
+        timeout: this.bubblesDuration / 5,
+      },
+      {
+        radius: 90.0,
+        initialPosition: [this.canvasCenter.x + this.innerWidth / 3, -100],
+        position: [this.canvasCenter.x + this.innerWidth / 3, -100],
+        finalPosition: [this.canvasCenter.x + this.innerWidth / 3 , this.innerHeight + 100],
+        positionAmplitude: 100,
+        timeout: this.bubblesDuration / 4,
       },
     ];
 
@@ -106,7 +116,7 @@ export default class Intro {
                 bubbles: this.bubbles,
                 resolution: [width * pixelRatio, width / this.textureRatio * pixelRatio],
               }
-            }
+            },
           },
         });
 
@@ -177,7 +187,11 @@ export default class Intro {
   }
 
   animate() {
-    this.bubbles.forEach((bubble, index) => animateProgress(this.bubblePositionAnimationTick(index, this.bubbles[index].initialPosition, this.bubbles[index].finalPosition), this.bubblesDuration));
+    this.bubbles.forEach((bubble, index) => {
+      setTimeout(() => {
+        animateProgress(this.bubblePositionAnimationTick(index, this.bubbles[index].initialPosition, this.bubbles[index].finalPosition), this.bubblesDuration)
+      }, this.bubbles[index].timeout);
+    });
   }
 
   render() {
