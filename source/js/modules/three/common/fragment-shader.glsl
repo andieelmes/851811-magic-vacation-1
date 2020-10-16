@@ -75,16 +75,16 @@ vec4 magnify(sampler2D map, magnificationStruct magnification) {
   // for (int index = 0; i < magnification.bubbles.length; index++) {
   // }
 
-  vec2 xy = gl_FragCoord.xy;
-  float offset = sqrt(pow(xy.x - position.x, 2.0) + pow(xy.y - position.y, 2.0));
+  vec2 point = gl_FragCoord.xy;
+  float offset = sqrt(pow(point.x - position.x, 2.0) + pow(point.y - position.y, 2.0));
 
-  bool pointIsInside = isInsideTheCircle(xy, position, hr);
-  bool pointIsOutline = isOutlineOfTheCircle(xy, position, hr, outlineThickness);
+  bool pointIsInside = isInsideTheCircle(point, position, hr);
+  bool pointIsOutline = isOutlineOfTheCircle(point, position, hr, outlineThickness);
 
-  vec2 newXy = pointIsInside ? (xy - position) * (R - h) / sqrt(pow(R, 2.0) - pow(offset, 2.0)) + position : xy;
+  vec2 newPoint = pointIsInside ? (point - position) * (R - h) / sqrt(pow(R, 2.0) - pow(offset, 2.0)) + position : point;
 
-  vec2 oldResolution = xy / vUv;
-  vec2 newVUv = (newXy) / resolution;
+  vec2 oldResolution = point / vUv;
+  vec2 newVUv = (newPoint) / resolution;
 
   if (pointIsOutline) {
     return blendOutline(texture2D(map, newVUv), outlineColor);
