@@ -13,12 +13,12 @@ export default class Intro {
     this.canvasSelector = `screen__canvas--story`;
     this.textures = [
       {
-        src: `img/screen__textures/scene-1.png`,
-        options: {hueShift: 0.0},
-      },
-      {
         src: `img/screen__textures/scene-2.png`,
         options: {hueShift: -0.26, magnify: true},
+      },
+      {
+        src: `img/screen__textures/scene-1.png`,
+        options: {hueShift: 0.0},
       },
       {
         src: `img/screen__textures/scene-3.png`,
@@ -38,7 +38,7 @@ export default class Intro {
       {
         radius: 120.0,
         initialPosition: [this.canvasCenter.x - this.canvasCenter.x / 10, -100],
-        position: [this.canvasCenter.x - this.canvasCenter.x/ 10, -100],
+        position: [this.canvasCenter.x - this.canvasCenter.x / 10, -100],
         finalPosition: [this.canvasCenter.x - this.canvasCenter.x / 10, this.innerHeight + 100],
         positionAmplitude: 50,
         timeout: 0,
@@ -47,7 +47,7 @@ export default class Intro {
         radius: 80.0,
         initialPosition: [this.canvasCenter.x - this.innerWidth / 4, -100],
         position: [this.canvasCenter.x - this.innerWidth / 4, -100],
-        finalPosition: [this.canvasCenter.x - this.innerWidth / 4 , this.innerHeight + 100],
+        finalPosition: [this.canvasCenter.x - this.innerWidth / 4, this.innerHeight + 100],
         positionAmplitude: 40,
         timeout: this.bubblesDuration / 5,
       },
@@ -79,11 +79,11 @@ export default class Intro {
   resetBubbles() {
     this.bubbles.forEach((_, index) => {
       this.bubbles[index].position = [...this.bubbles[index].initialPosition];
-    })
+    });
   }
 
   addBubbleUniform(index) {
-    const { width, height } = this.renderer.getSize();
+    const {width} = this.renderer.getSize();
     const pixelRatio = this.renderer.getPixelRatio();
 
     if (this.textures[index].options.magnify) {
@@ -176,9 +176,9 @@ export default class Intro {
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(this.innerWidth, this.innerHeight);
 
-    const magnifiedIndex = this.textures.findIndex(texture => texture.options.magnify);
+    const magnifiedIndex = this.textures.findIndex((texture) => texture.options.magnify);
 
-    const { width, height } = this.renderer.getSize();
+    const {width} = this.renderer.getSize();
     const pixelRatio = this.renderer.getPixelRatio();
 
     this.materials[magnifiedIndex].uniforms.magnification.value.resolution = [width * pixelRatio, width / this.textureRatio * pixelRatio];
@@ -210,7 +210,7 @@ export default class Intro {
   animateBubbles() {
     this.bubbles.forEach((bubble, index) => {
       setTimeout(() => {
-        animateProgress(this.bubblePositionAnimationTick(index, this.bubbles[index].initialPosition, this.bubbles[index].finalPosition), this.bubblesDuration)
+        animateProgress(this.bubblePositionAnimationTick(index, this.bubbles[index].initialPosition, this.bubbles[index].finalPosition), this.bubblesDuration);
       }, this.bubbles[index].timeout);
     });
   }
