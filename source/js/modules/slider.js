@@ -91,7 +91,6 @@ export default () => {
 
     if (screenName === `story`) {
       scene.init();
-      scene.changeScene(0);
     } else {
       scene.end();
     }
